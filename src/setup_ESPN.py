@@ -32,3 +32,5 @@ def get_all_players():
 
     for player in free_agents:
         all_players.append(player)
+
+
