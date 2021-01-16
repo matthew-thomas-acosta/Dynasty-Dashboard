@@ -1,5 +1,7 @@
-import setup_main
+import setup_ESPN
 
 if __name__ == '__main__':
-    for player in setup_main.espn_fantasy_players:
-        setup_main.print_espn_player(player)
+    for player in setup_ESPN.get_all_players():
+        setup_ESPN.print_espn_player(player)
+        break
+
