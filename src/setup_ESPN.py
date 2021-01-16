@@ -18,14 +18,64 @@ def package_team_data():
             'tm_wins': team.wins,
             'tm_losses': team.losses,
             'tm_ties': team.ties,
-            'tm_points_for': team.points_for,
+            'tm_pts_for': team.points_for,
             'tm_pts_against': team.points_against,
             'tm_streak_type': team.streak_type,
             'tm_streak': team.streak_length,
             'tm_standing': team.standing,
-            'tm_roster': package_espn_roster(team)
+            'tm_roster': package_espn_roster(team=team)
         }
+
+        espn_teams.append(team_data)
+
+    return espn_teams
 
 
 def package_espn_roster(team):
-    return ''
+    espn_roster = []
+
+    for player in team.roster:
+        espn_player = {
+            'plyr_name': player.name,
+            'plyr_team': player.proTeam,
+            'plyr_pos': player.position
+        }
+
+        espn_roster.append(espn_player)
+
+    return espn_roster
+
+
+def print_team(team):
+    print('Rank {}: {}'.format(team['tm_standing'], team['tm_name']))
+    print('Owner: {}'.format(team['tm_owner']))
+    print('Record: {} - {} - {}'.format(team['tm_wins'], team['tm_losses'], team['tm_ties']))
+    print('Points For: {}\tPoints Against: {}'.format(team['tm_pts_for'], team['tm_pts_against']))
+    print('Roster:\n')
+
+    for player in team['tm_roster']:
+        print('\t{}\t{}\t{}'.format(player['plyr_name'], player['plyr_pos'], player['plyr_team']))
+
+    print('\n')
+
+
+def package_scoring():
+    espn_scoring = {
+        'sc_receiving': {
+
+        },
+        'sc_rushing': {
+
+        },
+        'sc_passing': {
+
+        },
+        'sc_kicking': {
+
+        },
+        'sc_defense': {
+
+        }
+    }
+
+    return espn_scoring
