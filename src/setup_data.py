@@ -13,7 +13,6 @@ def parse_active_player_urls():
 
     active_player_stats = []
 
-    i = 1
     for url in urls:
         url_string = strip_url(url)
 
@@ -31,15 +30,19 @@ def parse_active_player_urls():
         for attr in player_page.find_all(attrs={'class': 'table_container is_setup'}):
             if attr['id'] == 'div_passing':
                 player_stats['passing'] = parse_passing(attr)
-            elif attr['id'] == 'div_rushing_and_receiving':
+            elif attr['id'] == 'div_receiving_and_rushing':
                 player_stats['rush_rec'] = parse_rushing_receiving(attr)
+            elif attr['id'] == 'div_detailed_receiving_and_rushing':
+                player_stats['adv_rush_rec'] = parse_adv_rushing_receiving(attr)
             elif attr['id'] == 'div_defense':
                 player_stats['def'] = parse_defense(attr)
+            elif attr['id'] == 'div_returns':
+                player_stats['ret'] = parse_returns(attr)
 
         player['stats'] = player_stats
         active_player_stats.append(player)
 
-        i = i + 1
+    return active_player_stats
 
 
 def parse_player_header(header):
@@ -54,8 +57,16 @@ def parse_rushing_receiving(rush_rec):
     return rush_rec
 
 
+def parse_adv_rushing_receiving(adv_rush_rec):
+    return adv_rush_rec
+
+
 def parse_defense(defense):
     return defense
+
+
+def parse_returns(returns):
+    return returns
 
 
 def get_active_player_urls():
