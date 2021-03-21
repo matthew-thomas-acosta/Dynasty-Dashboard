@@ -1,4 +1,3 @@
-import pandas as pd
 import string
 
 from bs4 import BeautifulSoup
@@ -18,9 +17,9 @@ def parse_active_player_urls():
 
         driver.get('https://www.pro-football-reference.com{}'.format(url_string))
         content = driver.page_source
-        player_page = BeautifulSoup(content)
+        player_page = BeautifulSoup(content, features="lxml")
 
-        player = {}
+        player = {'id': strip_id(url_string)}
 
         player_header = parse_player_header(player_page.find(attrs={'class': 'players'}))
         player['header'] = player_header
@@ -38,6 +37,8 @@ def parse_active_player_urls():
                 player_stats['def'] = parse_defense(attr)
             elif attr['id'] == 'div_returns':
                 player_stats['ret'] = parse_returns(attr)
+            else:
+                continue
 
         player['stats'] = player_stats
         active_player_stats.append(player)
@@ -77,9 +78,9 @@ def get_active_player_urls():
     for ltr in alphabet:
         driver.get('https://www.pro-football-reference.com/players/{}/'.format(ltr))
         content = driver.page_source
-        letter_page = BeautifulSoup(content)
+        letter_page = BeautifulSoup(content, features="lxml")
 
-        for attr in letter_page.find_all(attrs={'class':'section_content'}):
+        for attr in letter_page.find_all(attrs={'class': 'section_content'}):
             if attr['id'] == 'div_players':
                 names = attr.find_all('b')
                 for name in names:
@@ -95,3 +96,18 @@ def strip_url(url):
     url_string = url_string[0:after_htm]
     return url_string
 
+
+def strip_id(url):
+    char_list = list(url)
+
+    while '/' in char_list:
+        char_list.pop(0)
+
+    id_string = ""
+
+    for char in char_list:
+        if char == '.':
+            break
+        id_string += char
+
+    return id_string
