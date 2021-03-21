@@ -1,6 +1,6 @@
 import setup_ESPN
-import setup_data
+import setup_data as data
 
 if __name__ == '__main__':
-    setup_data.get_player_ids()
+    data.active_player_urls()
 
