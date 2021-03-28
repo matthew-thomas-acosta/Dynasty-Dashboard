@@ -24,19 +24,21 @@ def parse_active_player_urls():
         player_header = parse_player_header(player_page.find(attrs={'class': 'players'}))
         player['header'] = player_header
 
-        player_stats = {}
+        player_stats = []
 
         for attr in player_page.find_all(attrs={'class': 'table_container is_setup'}):
             if attr['id'] == 'div_passing':
-                player_stats['passing'] = parse_passing(attr)
+                player_stats.append(parse_passing(attr))
             elif attr['id'] == 'div_receiving_and_rushing':
-                player_stats['rush_rec'] = parse_rushing_receiving(attr)
+                player_stats.append(parse_rushing_receiving(attr))
             elif attr['id'] == 'div_detailed_receiving_and_rushing':
-                player_stats['adv_rush_rec'] = parse_adv_rushing_receiving(attr)
+                player_stats.append(parse_adv_rushing_receiving(attr))
             elif attr['id'] == 'div_defense':
-                player_stats['def'] = parse_defense(attr)
+                player_stats.append(parse_defense(attr))
+            elif attr['id'] == 'div_detailed_defense':
+                player_stats.append(parse_adv_defense(attr))
             elif attr['id'] == 'div_returns':
-                player_stats['ret'] = parse_returns(attr)
+                player_stats.append(parse_returns(attr))
             else:
                 continue
 
@@ -47,27 +49,116 @@ def parse_active_player_urls():
 
 
 def parse_player_header(header):
-    return header
+    header = BeautifulSoup(str(header), features="lxml")
+    player_header = {}
+
+    player_name = str(header.find(attrs={'itemprop': 'name'})).replace('<h1 itemprop="name">\n<span>', '').replace('</span>\n</h1>','')
+    player_header['name'] = player_name
+
+    header_attrs = header.find_all('p')
+    for attr in header_attrs:
+        attr_str = str(attr)
+
+        if '<strong>' in attr_str:
+            label = attr_str.split('</strong>', 1)[0].split('g>', 1)[1]
+
+            if label == 'Position':
+                value = attr_str.split('</strong>', 1)[1].split('\n', 1)[0].replace(': ', '')
+                player_header['position'] = value
+            if label == 'Team':
+                value = attr_str.split('</strong>', 1)[1].split('/teams/', 1)[1].split('/202', 1)[0]
+                value = fix_abbrev(value)
+                player_header['team'] = value
+            if label == 'College':
+                value = attr_str.split('/">', 1)[1].split('</a>')[0]
+                player_header['college'] = value
+            if label == 'Born:':
+                value = attr_str.split('d)', 1)[0].split('>(', 1)[1].split(':', 1)[1].split('-', 1)[0][1:]
+                player_header['age'] = int(value)
+
+    return player_header
 
 
 def parse_passing(passing):
-    return passing
+    rush_rec = BeautifulSoup(str(passing), features="lxml")
+
+    player_passing = {'stat_type': 'passing'}
+
+    table = rush_rec.find('tbody')
+    player_table = parse_table(table)
+
+    player_passing['table'] = player_table
+
+    return player_passing
 
 
 def parse_rushing_receiving(rush_rec):
-    return rush_rec
+    rush_rec = BeautifulSoup(str(rush_rec), features="lxml")
+
+    player_rush_rec = {'stat_type': 'rush_rec'}
+
+    table = rush_rec.find('tbody')
+    player_table = parse_table(table)
+
+    player_rush_rec['table'] = player_table
+
+    return player_rush_rec
 
 
 def parse_adv_rushing_receiving(adv_rush_rec):
-    return adv_rush_rec
+    adv_rush_rec = BeautifulSoup(str(adv_rush_rec), features="lxml")
+
+    player_adv_rush_rec = {'stat_type': 'adv_rush_rec'}
+
+    table = adv_rush_rec.find('tbody')
+    player_table = parse_table(table)
+
+    player_adv_rush_rec['table'] = player_table
+
+    return player_adv_rush_rec
 
 
 def parse_defense(defense):
-    return defense
+    defense = BeautifulSoup(str(defense), features="lxml")
+
+    player_defense = {'stat_type': 'defense'}
+
+    table = defense.find('tbody')
+    player_table = parse_table(table)
+
+    player_defense['table'] = player_table
+
+    return player_defense
+
+
+def parse_adv_defense(adv_defense):
+    adv_defense = BeautifulSoup(str(adv_defense), features="lxml")
+
+    player_adv_defense = {'stat_type': 'adv_defense'}
+
+    table = adv_defense.find('tbody')
+    player_table = parse_table(table)
+
+    player_adv_defense['table'] = player_table
+
+    return player_adv_defense
 
 
 def parse_returns(returns):
-    return returns
+    returns = BeautifulSoup(str(returns), features="lxml")
+
+    player_returns = {'stat_type': 'returns'}
+
+    table = returns.find('tbody')
+    player_table = parse_table(table)
+
+    player_returns['table'] = player_table
+
+    return player_returns
+
+
+def parse_table(table):
+    return table
 
 
 def get_active_player_urls():
@@ -111,3 +202,42 @@ def strip_id(url):
         id_string += char
 
     return id_string
+
+
+def fix_abbrev(abbrev):
+    abbreviations = {
+        'atl': 'ATL',
+        'buf': 'BUF',
+        'car': 'CAR',
+        'chi': 'CHI',
+        'cin': 'CIN',
+        'cle': 'CLE',
+        'clt': 'IND',
+        'crd': 'ARI',
+        'dal': 'DAL',
+        'den': 'DEN',
+        'det': 'DET',
+        'gnb': 'GB',
+        'htx': 'HOU',
+        'jax': 'JAX',
+        'kan': 'KC',
+        'mia': 'MIA',
+        'min': 'MIN',
+        'nor': 'NO',
+        'nwe': 'NE',
+        'nyg': 'NYG',
+        'nyj': 'NYJ',
+        'oti': 'TEN',
+        'phi': 'PHI',
+        'pit': 'PIT',
+        'rai': 'LV',
+        'ram': 'LAR',
+        'rav': 'BAL',
+        'sdg': 'LAC',
+        'sea': 'SEA',
+        'sfo': 'SF',
+        'tam': 'TB',
+        'was': 'WAS'
+    }
+
+    return abbreviations.get(abbrev, "FA")
