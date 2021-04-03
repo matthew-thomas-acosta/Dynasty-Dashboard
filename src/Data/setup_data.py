@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 
 driver = webdriver\
-    .Chrome(executable_path=r'/chromedriver.exe')
+    .Chrome(executable_path=r'chromedriver.exe')
 
 
 def parse_active_player_urls():
