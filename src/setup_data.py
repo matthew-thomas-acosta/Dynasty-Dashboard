@@ -9,10 +9,14 @@ driver = webdriver\
 
 def parse_active_player_urls():
     urls = get_active_player_urls()
+    num_urls = len(urls)
 
     active_player_stats = []
 
+    i = 0
+
     for url in urls:
+        i = i + 1
         url_string = strip_url(url)
 
         driver.get('https://www.pro-football-reference.com{}'.format(url_string))
@@ -43,6 +47,7 @@ def parse_active_player_urls():
                 continue
 
         player['stats'] = player_stats
+        print('[{}/{}] {}'.format(i, num_urls, player['header']['name']))
         active_player_stats.append(player)
 
     return active_player_stats
@@ -158,7 +163,53 @@ def parse_returns(returns):
 
 
 def parse_table(table):
-    return table
+    table = BeautifulSoup(str(table), features="lxml")
+
+    player_table = []
+
+    rows = table.find_all(attrs={'class': 'full_table'})
+    for row in rows:
+        table_row = parse_table_row(row)
+        player_table.append(table_row)
+
+    return player_table
+
+
+def parse_table_row(row):
+    row = BeautifulSoup(str(row), features="lxml")
+
+    table_row = {}
+
+    year = str(row.find('th')).split('/">')[1].split('<')[0]
+    table_row['year'] = int(year)
+
+    columns = row.find_all('td')
+    for column in columns:
+        column = str(column)
+
+        key = column.split('">')[0].split('data-stat="')[1]
+        if not resolve_key(key):
+            continue
+
+        value = column.split('">')[1].split('<')[0]
+
+        if '%' in value:
+            value = value.replace('%', '')
+
+        if 'per' in key or 'pct' in key or key == 'sacks' or '.' in value:
+            if value == '':
+                value = 0.0
+            else:
+                value = float(value)
+        else:
+            if value == '':
+                value = 0
+            else:
+                value = int(value)
+
+        table_row[key] = value
+
+    return table_row
 
 
 def get_active_player_urls():
@@ -241,3 +292,13 @@ def fix_abbrev(abbrev):
     }
 
     return abbreviations.get(abbrev, "FA")
+
+
+def resolve_key(key):
+    unused_keys = {
+        'team': False,
+        'pos': False,
+        'qb_rec': False
+    }
+
+    return unused_keys.get(key, True)
