@@ -3,7 +3,9 @@
 Welcome, this is a web dashboard that I am working on for my Fantasy Dynasty League. 
 
 # Usage
-
-The end product is strictly meant for league/personal use. I will likely set up a demo account in the future
+End product for personal use only. Demo account may be added once project is live.
 
 # Architecture
+
+ESPN fantasy data obtained via espn_api by cwendt94.\
+Player statistical data obtained from Pro Football Reference using BeautifulSoup.
