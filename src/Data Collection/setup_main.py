@@ -8,7 +8,7 @@ import setup_data as data
 def write_espn():
     teams = eSPN.parse_team_data()
 
-    espn_path = r'C:\Users\Matthew Acosta\PyCharmProjects\DynastyDashboardDataCollection\ESPN_data'
+    espn_path = r'/ESPN_data'
     if not os.path.exists(espn_path):
         os.makedirs(espn_path)
 
@@ -27,7 +27,7 @@ def write_espn():
 def write_data():
     players = data.parse_active_player_urls()
 
-    data_path = r'C:\Users\Matthew Acosta\PyCharmProjects\DynastyDashboardDataCollection\player_data'
+    data_path = r'/player_data'
     if not os.path.exists(data_path):
         os.makedirs(data_path)
 
