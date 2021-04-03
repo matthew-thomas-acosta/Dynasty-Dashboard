@@ -6,8 +6,15 @@ from src.Data import setup_data as data
 
 
 def collect_data():
-    write_espn()
-    write_data()
+    if not os.path.exists('C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/ESPN_data'):
+        write_espn()
+    else:
+        print('espn skipped')
+
+    if not os.path.exists('C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/player_data'):
+        write_data()
+    else:
+        print('players skipped')
 
 
 def write_espn():

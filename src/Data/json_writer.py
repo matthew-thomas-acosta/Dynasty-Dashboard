@@ -4,7 +4,7 @@ import os
 import sqlite3
 
 
-path = r'C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/db'
+path = 'C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/db'
 
 
 def connect(db_path):
@@ -13,7 +13,7 @@ def connect(db_path):
     if not os.path.exists(db_path):
         os.makedirs(db_path)
 
-    db_path = db_path + r'/Dynasty.db'
+    db_path = db_path + '/Dynasty.db'
 
     try:
         db_conn = sqlite3.connect(db_path)
