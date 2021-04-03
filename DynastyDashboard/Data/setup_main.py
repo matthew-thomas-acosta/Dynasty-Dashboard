@@ -1,24 +1,23 @@
 import os
 import json
-
-from src.Data import setup_ESPN as eSPN
-from src.Data import setup_data as data
+from . import setup_ESPN as esPN
+from . import setup_data as data
 
 
 def collect_data():
-    if not os.path.exists('C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/ESPN_data'):
+    if not os.path.exists(r'C:\Users\Matthew Acosta\PycharmProjects\DynastyDashboardDataCollection\ESPN_data'):
         write_espn()
     else:
         print('espn skipped')
 
-    if not os.path.exists('C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/player_data'):
+    if not os.path.exists(r'C:\Users\Matthew Acosta\PycharmProjects\DynastyDashboardDataCollection\player_data'):
         write_data()
     else:
         print('players skipped')
 
 
 def write_espn():
-    teams = eSPN.parse_team_data()
+    teams = esPN.parse_team_data()
 
     espn_path = r'\ESPN_data'
     if not os.path.exists(espn_path):

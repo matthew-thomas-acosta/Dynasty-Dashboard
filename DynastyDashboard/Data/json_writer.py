@@ -4,7 +4,7 @@ import os
 import sqlite3
 
 
-path = 'C:/Users/Matthew Acosta/PycharmProjects/DynastyDashboardDataCollection/db'
+path = '/db'
 
 
 def connect(db_path):

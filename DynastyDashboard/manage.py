@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+
+from Data import setup_main as setup
+from Data import json_writer as jsn
+
 import os
 import sys
 
@@ -19,4 +23,5 @@ def main():
 
 
 if __name__ == '__main__':
+    setup.collect_data()
     main()
