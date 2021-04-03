@@ -8,4 +8,4 @@ End product for personal use only. Demo account may be added once project is liv
 # Architecture
 
 ESPN fantasy data obtained via espn_api by cwendt94.\
-Player statistical data obtained from Pro Football Reference using BeautifulSoup.
+Player statistical data obtained from Pro Football Reference via BeautifulSoup.
